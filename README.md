@@ -54,14 +54,14 @@ python app.py,
 
 Backend runs at:
 http://127.0.0.1:5000 ,
-5️⃣ Run the frontend
-cd ../Frontend
-python -m http.server 5500
+5️⃣ Run the frontend,
+cd ../Frontend,
+python -m http.server 5500,
 Open in browser:
 http://127.0.0.1:5500
 
 **🔄 Application Workflow**
-🔹 Face Registration
+🔹 Face Registration,
 User enters an email,
 Webcam is activated in the browser,
 Multiple face samples are captured,
@@ -102,7 +102,7 @@ This project is intended for educational and learning purposes only.
 Not recommended for production authentication without additional security layers.
 
 **👤 Author**
-Anuj Bhatia
+Anuj Bhatia,
 GitHub: https://github.com/AnujBhatia7471
 
 **🧠 Summary**
