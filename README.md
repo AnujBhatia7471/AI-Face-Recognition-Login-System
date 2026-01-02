@@ -4,31 +4,31 @@ The application allows users to register and log in using their face via a webca
 This project demonstrates a real-world ML deployment workflow, combining computer vision, deep learning inference, backend APIs, and frontend camera integration.
 
 **🚀 Key Features**
-Browser-based face registration and login
-No terminal or CLI interaction for users
-High-accuracy ArcFace ONNX model for facial embeddings
-Cosine similarity–based face matching
-OpenCV DNN–based face detection
-Secure storage of facial embeddings (not images)
-SQLite database for persistence
-Flask REST API backend
-Automatic ONNX model download at runtime
-Clean and responsive frontend UI
+Browser-based face registration and login,
+No terminal or CLI interaction for users,
+High-accuracy ArcFace ONNX model for facial embeddings,
+Cosine similarity–based face matching,
+OpenCV DNN–based face detection,
+Secure storage of facial embeddings (not images),
+SQLite database for persistence,
+Flask REST API backend,
+Automatic ONNX model download at runtime,
+Clean and responsive frontend UI,
 Separation of frontend and backend (deployment-ready)
 
 **🛠 Technology Stack**
 **Backend**
-Python 3.10
-Flask
-Flask-CORS
-OpenCV (headless)
-ONNX Runtime
-ArcFace (ONNX)
-NumPy
-SQLite
+Python 3.10,
+Flask,
+Flask-CORS,
+OpenCV (headless),
+ONNX Runtime,
+ArcFace (ONNX),
+NumPy,
+SQLite,
 **Frontend**
-HTML
-CSS
+HTML,
+CSS,
 JavaScript (Webcam + Fetch API)
 
 **📁 Project Structure**
@@ -41,16 +41,16 @@ JavaScript (Webcam + Fetch API)
 The ArcFace ONNX model is not stored in GitHub. It is automatically downloaded at runtime.
 
 **⚙️ Installation (Local Setup)**
-1️⃣ Clone the repository
-git clone https://github.com/AnujBhatia7471/Face-Recognition-Login-Page.git
-cd Face-Recognition-Login/Backend
-2️⃣ Create and activate a virtual environment (recommended)
-python -m venv venv
-venv\Scripts\activate   # Windows
-3️⃣ Install dependencies
-pip install -r requirements.txt
-4️⃣ Run the backend
-python app.py
+1️⃣ Clone the repository,
+git clone https://github.com/AnujBhatia7471/Face-Recognition-Login-Page.git,
+cd Face-Recognition-Login/Backend,
+2️⃣ Create and activate a virtual environment (recommended),
+python -m venv venv,
+venv\Scripts\activate   # Windows,
+3️⃣ Install dependencies,
+pip install -r requirements.txt,
+4️⃣ Run the backend,
+python app.py,
 
 Backend runs at:
 http://127.0.0.1:5000 ,
