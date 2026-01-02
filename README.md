@@ -32,26 +32,8 @@ CSS
 JavaScript (Webcam + Fetch API)
 
 **📁 Project Structure**
-Face-Recognition-Login-System/
-│
-├── Backend/
-│   ├── app.py
-│   ├── requirements.txt
-│   ├── runtime.txt
-│   ├── users.db
-│   ├── deploy.prototxt
-│   ├── res10_300x300_ssd_iter_140000.caffemodel
-│
-├── Frontend/
-│   ├── index.html
-│   ├── register.html
-│   ├── dashboard.html
-│   ├── style.css
-│   ├── login.js
-│   ├── register.js
-│
-├── README.md
-├── .gitignore
+<img width="416" height="511" alt="image" src="https://github.com/user-attachments/assets/f0200948-62ff-4b92-865e-dc1c98171897" />
+
 
 
 **Note:**
