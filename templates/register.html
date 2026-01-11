@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<form id="regForm">
+  <div class="container">
+    <h2>Register</h2>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <video id="video" muted style="display:none;"></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <!-- NO onclick here -->
+    <button type="button" id="startBtn">Start Camera</button>
+
+    <button type="button" id="sampleBtn" disabled>
+      Take Sample (1 / 5)
+    </button>
+
+    <p id="result"></p>
+    <a href="/">Already registered? Login</a>
+  </div>
+</form>
+
+
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='register.js') }}"></script>
+
+</body>
+</html>

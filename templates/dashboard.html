@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <h2>Welcome</h2>
+  <p>You are logged in as:</p>
+  <b id="userEmail"></b>
+  <br><br>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+  document.getElementById("userEmail").innerText =
+    localStorage.getItem("user") || "Unknown";
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "/";
+  }
+</script>
+
+</body>
+</html>
