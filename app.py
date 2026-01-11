@@ -83,7 +83,7 @@ MODEL_URL = (
     "https://huggingface.co/FoivosPar/Arc2Face/resolve/"
     "da2f1e9aa3954dad093213acfc9ae75a68da6ffd/arcface.onnx"
 )
-MODEL_PATH = os.path.join(BASE_DIR, "arcface_int8.onnx")
+MODEL_PATH = os.path.join(BASE_DIR, "arcface_fp16.onnx")
 
 arcface = None
 arc_input_name = None
