@@ -38,6 +38,17 @@ def dashboard_page():
 
 
 
+
+def get_cv2():
+    global cv2
+    if cv2 is None:
+        import cv2 as _cv2
+        cv2 = _cv2
+    return cv2
+
+
+
+
 def get_face_detector():
     global cv2, face_detector
 
@@ -54,6 +65,38 @@ def get_face_detector():
         )
 
     return face_detector
+
+
+
+
+
+
+def detect_face(img):
+    if img is None:
+        return None
+
+    cv = get_cv2()
+    detector = get_face_detector()
+
+    h, w = img.shape[:2]
+    blob = cv.dnn.blobFromImage(
+        img, 1.0, (300, 300), (104, 177, 123)
+    )
+
+    detector.setInput(blob)
+    dets = detector.forward()
+
+    for i in range(dets.shape[2]):
+        if dets[0, 0, i, 2] > 0.9:
+            box = dets[0, 0, i, 3:7] * np.array([w, h, w, h])
+            x1, y1, x2, y2 = box.astype(int)
+            face = img[y1:y2, x1:x2]
+            if face.size:
+                return face
+    return None
+
+
+
 
 
 # ---------- CORS (LOCKED) ----------
@@ -142,8 +185,10 @@ def get_arcface():
 
 
 def get_embedding(face):
-    face = cv2.resize(face, (112, 112))
-    face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+    cv = get_cv2()
+    face = cv.resize(face, (112, 112))
+    face = cv.cvtColor(face, cv.COLOR_BGR2RGB)
+
 
     face = (face.astype(np.float32) / 255.0).astype(np.float16)
     face = np.transpose(face, (2, 0, 1))
@@ -195,10 +240,12 @@ def register():
                 (email, password)
             )
 
-        img = cv2.imdecode(
+        cv = get_cv2()
+        img = cv.imdecode(
             np.frombuffer(image.read(), np.uint8),
-            cv2.IMREAD_COLOR
+            cv.IMREAD_COLOR
         )
+
 
         face = detect_face(img)
         if face is None:
@@ -246,10 +293,12 @@ def face_login():
         if not rows:
             return jsonify(success=False, msg="User not registered")
 
-        img = cv2.imdecode(
+        cv = get_cv2()
+        img = cv.imdecode(
             np.frombuffer(image.read(), np.uint8),
-            cv2.IMREAD_COLOR
+            cv.IMREAD_COLOR
         )
+
 
         face = detect_face(img)
         if face is None:
