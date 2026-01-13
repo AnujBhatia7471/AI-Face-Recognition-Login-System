@@ -5,7 +5,11 @@ import numpy as np
 import onnxruntime as ort
 import urllib.request
 import threading
-from flask import Flask, render_template, request, jsonify
+import psutil
+import os
+import time
+
+from flask import F lask, render_template, request, jsonify
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
@@ -31,6 +35,16 @@ def dashboard_page():
     return render_template("dashboard.html")
 
 
+
+
+def ram_watcher():
+    p = psutil.Process(os.getpid())
+    while True:
+        mem = p.memory_info().rss / 1024 / 1024
+        print(f"[RAM] {mem:.2f} MB")
+        time.sleep(2)
+
+
 # ---------- CORS (LOCKED) ----------
 CORS(app)
 
@@ -44,6 +58,7 @@ CAFFE_URL = (
     "dnn_samples_face_detector_20170830/"
     "res10_300x300_ssd_iter_140000.caffemodel"
 )
+
 CAFFE_PATH = os.path.join(BASE_DIR, "res10_300x300_ssd_iter_140000.caffemodel")
 
 if not os.path.exists(CAFFE_PATH):
@@ -79,10 +94,10 @@ conn.commit()
 conn.close()
 
 # ================= ARC FACE =================
-MODEL_URL = (
-    "https://huggingface.co/FoivosPar/Arc2Face/resolve/"
-    "da2f1e9aa3954dad093213acfc9ae75a68da6ffd/arcface.onnx"
-)
+# MODEL_URL = (
+#     "https://huggingface.co/FoivosPar/Arc2Face/resolve/"
+#     "da2f1e9aa3954dad093213acfc9ae75a68da6ffd/arcface.onnx"
+# )
 MODEL_PATH = os.path.join(BASE_DIR, "arcface_fp16.onnx")
 
 arcface = None
@@ -93,9 +108,6 @@ def get_arcface():
     global arcface, arc_input_name
     with arc_lock:
         if arcface is None:
-            if not os.path.exists(MODEL_PATH):
-                urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
-
             arcface = ort.InferenceSession(
                 MODEL_PATH,
                 providers=["CPUExecutionProvider"]
@@ -131,18 +143,25 @@ def get_embedding(face):
     face = cv2.resize(face, (112, 112))
     face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
 
-    face = face.astype(np.float32) / 255.0
-
-    # HWC → CHW
+    face = (face.astype(np.float32) / 255.0).astype(np.float16)
     face = np.transpose(face, (2, 0, 1))
-
-    # Add batch dimension
     face = np.expand_dims(face, axis=0)
 
     session = get_arcface()
-    emb = session.run(None, {arc_input_name: face})[0][0]
+    outs = session.run(None, {arc_input_name: face})
 
-    return emb / np.linalg.norm(emb)
+    # Pick correct ArcFace embedding (prevents 256 vs 512 bug)
+    for o in outs:
+        if len(o.shape) == 2 and o.shape[1] in (256, 512):
+            emb = o[0]
+            break
+    else:
+        raise Exception("ArcFace embedding not found")
+
+    emb = emb.astype(np.float32)
+    emb = emb / np.linalg.norm(emb)
+    return emb
+
 
 
 
@@ -185,6 +204,7 @@ def register():
             return jsonify(success=False, msg="No face detected")
 
         emb = get_embedding(face)
+
         cur.execute(
             "INSERT INTO embeddings (email, embedding) VALUES (?, ?)",
             (email, emb.tobytes())
@@ -281,5 +301,10 @@ def password_login():
 
 # ================= MAIN =================
 if __name__ == "__main__":
+    import threading
+
+    t = threading.Thread(target=ram_watcher, daemon=True)
+    t.start()
+
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
