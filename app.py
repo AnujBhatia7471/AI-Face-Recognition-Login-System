@@ -9,7 +9,7 @@ import psutil
 import os
 import time
 
-from flask import F lask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
