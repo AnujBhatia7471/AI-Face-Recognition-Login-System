@@ -9,6 +9,8 @@ cv2 = None
 ort = None
 face_detector = None
 
+HF_URL = "https://huggingface.co/FoivosPar/Arc2Face/resolve/da2f1e9aa3954dad093213acfc9ae75a68da6ffd/arcface.onnx"
+MODEL_PATH = os.path.join(BASE_DIR, "arcface.onnx")
 
 
 from flask import Flask, render_template, request, jsonify
@@ -155,15 +157,25 @@ arc_input_name = None
 arc_lock = threading.Lock()
 
 def get_arcface():
-    global arcface, arc_input_name
-    with arc_lock:
-        if arcface is None:
-            arcface = ort.InferenceSession(
-                MODEL_PATH,
-                providers=["CPUExecutionProvider"]
-            )
-            arc_input_name = arcface.get_inputs()[0].name
+    global ort, arcface, arc_input_name
+
+    if arcface is None:
+        import onnxruntime as _ort
+        ort = _ort
+
+        if not os.path.exists(MODEL_PATH):
+            print("Downloading ArcFace model...")
+            urllib.request.urlretrieve(HF_URL, MODEL_PATH)
+            print("ArcFace downloaded:", os.path.getsize(MODEL_PATH))
+
+        arcface = ort.InferenceSession(
+            MODEL_PATH,
+            providers=["CPUExecutionProvider"]
+        )
+        arc_input_name = arcface.get_inputs()[0].name
+
     return arcface
+
 
 # ================= UTILS =================
 def cosine_sim(a, b):
