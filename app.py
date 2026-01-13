@@ -56,8 +56,9 @@ def get_face_detector():
         import cv2 as _cv2
         cv2 = _cv2
 
-        if not os.path.exists(CAFFE_PATH):
-            urllib.request.urlretrieve(CAFFE_URL, CAFFE_PATH)
+        print("CAFFE exists:", os.path.exists(CAFFE_PATH))
+        if os.path.exists(CAFFE_PATH):
+            print("CAFFE size:", os.path.getsize(CAFFE_PATH))
 
         face_detector = cv2.dnn.readNetFromCaffe(
             os.path.join(BASE_DIR, "deploy.prototxt"),
