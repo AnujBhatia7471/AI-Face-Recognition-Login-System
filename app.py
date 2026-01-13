@@ -61,13 +61,19 @@ CAFFE_URL = (
 
 CAFFE_PATH = os.path.join(BASE_DIR, "res10_300x300_ssd_iter_140000.caffemodel")
 
-if not os.path.exists(CAFFE_PATH):
+# Always re-download to avoid LFS corruption
+try:
+    print("Downloading face detector model...")
     urllib.request.urlretrieve(CAFFE_URL, CAFFE_PATH)
+    print("Face detector downloaded")
+except Exception as e:
+    print("Download failed:", e)
 
 face_detector = cv2.dnn.readNetFromCaffe(
     os.path.join(BASE_DIR, "deploy.prototxt"),
     CAFFE_PATH
 )
+
 
 # ================= DATABASE =================
 DB_PATH = os.path.join(BASE_DIR, "users.db")
