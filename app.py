@@ -5,21 +5,26 @@ import urllib.request
 import threading
 import os
 import time
-cv2 = None
-ort = None
-face_detector = None
+from flask_cors import CORS
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 HF_URL = "https://huggingface.co/FoivosPar/Arc2Face/resolve/da2f1e9aa3954dad093213acfc9ae75a68da6ffd/arcface.onnx"
 MODEL_PATH = os.path.join(BASE_DIR, "arcface.onnx")
 
+arcface = None
+arc_input_name = None
+ort = None
+
+cv2 = None
+face_detector = None
 
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
 
-
-from flask_cors import CORS
 from flask import render_template
 
 @app.route("/")
@@ -103,12 +108,6 @@ def detect_face(img):
 # ---------- CORS (LOCKED) ----------
 CORS(app)
 
-
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-CAFFE_PATH = os.path.join(BASE_DIR, "res10_300x300_ssd_iter_140000.caffemodel")
-
 # ================= FACE DETECTOR =================
 CAFFE_URL = (
     "https://github.com/opencv/opencv_3rdparty/raw/"
@@ -150,11 +149,9 @@ conn.close()
 #     "https://huggingface.co/FoivosPar/Arc2Face/resolve/"
 #     "da2f1e9aa3954dad093213acfc9ae75a68da6ffd/arcface.onnx"
 # )
-MODEL_PATH = os.path.join(BASE_DIR, "arcface_fp16.onnx")
 
 arcface = None
 arc_input_name = None
-arc_lock = threading.Lock()
 
 def get_arcface():
     global ort, arcface, arc_input_name
@@ -181,20 +178,6 @@ def get_arcface():
 def cosine_sim(a, b):
     return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
 
-def get_arcface():
-    global ort, arcface, arc_input_name
-
-    if arcface is None:
-        import onnxruntime as _ort
-        ort = _ort
-
-        arcface = ort.InferenceSession(
-            MODEL_PATH,
-            providers=["CPUExecutionProvider"]
-        )
-        arc_input_name = arcface.get_inputs()[0].name
-
-    return arcface
 
 
 def get_embedding(face):
@@ -203,7 +186,9 @@ def get_embedding(face):
     face = cv.cvtColor(face, cv.COLOR_BGR2RGB)
 
 
-    face = (face.astype(np.float32) / 255.0).astype(np.float16)
+    face = face.astype(np.float32) / 255.0
+
+
     face = np.transpose(face, (2, 0, 1))
     face = np.expand_dims(face, axis=0)
 
