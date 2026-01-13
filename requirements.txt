@@ -4,6 +4,5 @@ opencv-python-headless
 numpy
 onnx
 onnxruntime
+psutil
 gunicorn
-    
-
