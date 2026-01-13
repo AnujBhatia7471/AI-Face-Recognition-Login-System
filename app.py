@@ -47,10 +47,6 @@ def get_cv2():
     return cv2
 
 
-print("CAFFE exists:", os.path.exists(CAFFE_PATH))
-print("CAFFE size:", os.path.getsize(CAFFE_PATH))
-
-
 def get_face_detector():
     global cv2, face_detector
 
@@ -108,6 +104,8 @@ CORS(app)
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+CAFFE_PATH = os.path.join(BASE_DIR, "res10_300x300_ssd_iter_140000.caffemodel")
 
 # ================= FACE DETECTOR =================
 CAFFE_URL = (
