@@ -47,6 +47,8 @@ def get_cv2():
     return cv2
 
 
+print("CAFFE exists:", os.path.exists(CAFFE_PATH))
+print("CAFFE size:", os.path.getsize(CAFFE_PATH))
 
 
 def get_face_detector():
