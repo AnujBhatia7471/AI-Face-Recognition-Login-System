@@ -1,13 +1,15 @@
 import os
-import cv2
 import sqlite3
 import numpy as np
-import onnxruntime as ort
 import urllib.request
 import threading
-import psutil
 import os
 import time
+cv2 = None
+ort = None
+face_detector = None
+
+
 
 from flask import Flask, render_template, request, jsonify
 
@@ -36,13 +38,22 @@ def dashboard_page():
 
 
 
+def get_face_detector():
+    global cv2, face_detector
 
-def ram_watcher():
-    p = psutil.Process(os.getpid())
-    while True:
-        mem = p.memory_info().rss / 1024 / 1024
-        print(f"[RAM] {mem:.2f} MB")
-        time.sleep(2)
+    if face_detector is None:
+        import cv2 as _cv2
+        cv2 = _cv2
+
+        if not os.path.exists(CAFFE_PATH):
+            urllib.request.urlretrieve(CAFFE_URL, CAFFE_PATH)
+
+        face_detector = cv2.dnn.readNetFromCaffe(
+            os.path.join(BASE_DIR, "deploy.prototxt"),
+            CAFFE_PATH
+        )
+
+    return face_detector
 
 
 # ---------- CORS (LOCKED) ----------
@@ -60,19 +71,8 @@ CAFFE_URL = (
 )
 
 CAFFE_PATH = os.path.join(BASE_DIR, "res10_300x300_ssd_iter_140000.caffemodel")
+face_detector = None
 
-# Always re-download to avoid LFS corruption
-try:
-    print("Downloading face detector model...")
-    urllib.request.urlretrieve(CAFFE_URL, CAFFE_PATH)
-    print("Face detector downloaded")
-except Exception as e:
-    print("Download failed:", e)
-
-face_detector = cv2.dnn.readNetFromCaffe(
-    os.path.join(BASE_DIR, "deploy.prototxt"),
-    CAFFE_PATH
-)
 
 
 # ================= DATABASE =================
@@ -125,25 +125,21 @@ def get_arcface():
 def cosine_sim(a, b):
     return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
 
-def detect_face(img):
-    if img is None:
-        return None
+def get_arcface():
+    global ort, arcface, arc_input_name
 
-    h, w = img.shape[:2]
-    blob = cv2.dnn.blobFromImage(
-        img, 1.0, (300, 300), (104, 177, 123)
-    )
-    face_detector.setInput(blob)
-    dets = face_detector.forward()
+    if arcface is None:
+        import onnxruntime as _ort
+        ort = _ort
 
-    for i in range(dets.shape[2]):
-        if dets[0, 0, i, 2] > 0.9:
-            box = dets[0, 0, i, 3:7] * np.array([w, h, w, h])
-            x1, y1, x2, y2 = box.astype(int)
-            face = img[y1:y2, x1:x2]
-            if face.size:
-                return face
-    return None
+        arcface = ort.InferenceSession(
+            MODEL_PATH,
+            providers=["CPUExecutionProvider"]
+        )
+        arc_input_name = arcface.get_inputs()[0].name
+
+    return arcface
+
 
 def get_embedding(face):
     face = cv2.resize(face, (112, 112))
@@ -308,9 +304,6 @@ def password_login():
 # ================= MAIN =================
 if __name__ == "__main__":
     import threading
-
-    t = threading.Thread(target=ram_watcher, daemon=True)
-    t.start()
 
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
