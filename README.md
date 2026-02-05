@@ -54,20 +54,7 @@ Cosine similarity compares it with stored embeddings.
 
 If similarity exceeds the threshold, login is successful.
 
-Project Structure
-project/
-│
-├── app.py
-├── arcface_fp16.onnx
-├── deploy.prototxt
-├── users.db
-│
-├── templates/
-│   ├── index.html
-│   ├── register.html
-│   └── dashboard.html
-│
-└── static/
+<img width="248" height="372" alt="image" src="https://github.com/user-attachments/assets/ee91c466-e927-422b-b016-f7adcf2d794a" />
 
 Installation
 1. Clone the repository
