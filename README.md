@@ -58,7 +58,7 @@ If similarity exceeds the threshold, login is successful.
 
 Installation
 1. Clone the repository
-git clone https://github.com/yourusername/face-recognition-login.git
+git clone https://github.com/AnujBhatia7471/Face-Recognition-Login-System.git
 cd face-recognition-login
 
 2. Create virtual environment (recommended)
