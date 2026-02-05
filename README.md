@@ -58,10 +58,13 @@ If similarity exceeds the threshold, login is successful.
 
 Installation
 1. Clone the repository
+
 git clone https://github.com/AnujBhatia7471/Face-Recognition-Login-System.git
+
 cd face-recognition-login
 
 2. Create virtual environment (recommended)
+
 python -m venv venv
 
 
@@ -77,6 +80,7 @@ Mac/Linux
 source venv/bin/activate
 
 3. Install dependencies
+
 pip install -r requirements.txt
 
 
@@ -85,6 +89,7 @@ If requirements file is not present, install manually:
 pip install flask opencv-python numpy onnxruntime psutil flask-cors
 
 4. Run the application
+
 python app.py
 
 
@@ -122,6 +127,6 @@ Face recognition optimization with GPU
 
 Author
 
-Anuj Bhatia
-Computer Science Engineer
+Anuj Bhatia 
+Computer Science Engineer 
 Portfolio: https://anujbhatia.pythonanywhere.com/
