@@ -2,7 +2,7 @@
 
 An AI-powered authentication system that allows users to log in using face recognition instead of traditional passwords. This project integrates computer vision and machine learning into a real-time web application using Python and Flask.
 
-Features
+**Features**
 
 Real-time face detection using OpenCV
 
@@ -18,7 +18,7 @@ Optional password-based login fallback
 
 Web interface built with Flask and JavaScript
 
-Tech Stack
+**Tech Stack**
 
 Backend: Python, Flask
 
@@ -32,7 +32,7 @@ Database: SQLite
 
 Other Tools: NumPy, psutil
 
-How It Works
+**How It Works**
 
 User Registration
 
@@ -56,7 +56,7 @@ If similarity exceeds the threshold, login is successful.
 
 <img width="248" height="372" alt="image" src="https://github.com/user-attachments/assets/ee91c466-e927-422b-b016-f7adcf2d794a" />
 
-Installation
+**Installation**
 1. Clone the repository
 
 git clone https://github.com/AnujBhatia7471/Face-Recognition-Login-System.git
@@ -66,7 +66,6 @@ cd face-recognition-login
 2. Create virtual environment (recommended)
 
 python -m venv venv
-
 
 Activate it:
 
@@ -115,7 +114,7 @@ Use HTTPS.
 
 Add liveness detection.
 
-Future Improvements
+**Future Improvements**
 
 Liveness detection to prevent spoofing
 
@@ -125,8 +124,10 @@ Role-based authentication
 
 Face recognition optimization with GPU
 
-Author
+**Author**
 
-Anuj Bhatia 
+**Anuj Bhatia** 
+
 Computer Science Engineer 
-Portfolio: https://anujbhatia.pythonanywhere.com/
+
+**Portfolio: https://anujbhatia.pythonanywhere.com/**
